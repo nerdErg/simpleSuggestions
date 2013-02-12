@@ -1,12 +1,9 @@
 package simplesuggestions
 
+import grails.test.mixin.TestMixin
+import grails.test.mixin.support.GrailsUnitTestMixin
+
 import com.nerderg.suggest.SuggestService
-
-import static org.junit.Assert.*
-
-import grails.test.mixin.*
-import grails.test.mixin.support.*
-import org.junit.*
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
@@ -14,15 +11,11 @@ import org.junit.*
 @TestMixin(GrailsUnitTestMixin)
 class SuggestServiceTests {
 
-    SuggestService suggestService
+    private SuggestService suggestService
 
     void setUp() {
         def grailsApp = [config: [suggest: [data: [directory: './test/unit/simplesuggestions/suggestions']]]]
         suggestService = new SuggestService(grailsApplication: grailsApp)
-    }
-
-    void tearDown() {
-        // Tear down logic here
     }
 
     void testSuggestion() {
