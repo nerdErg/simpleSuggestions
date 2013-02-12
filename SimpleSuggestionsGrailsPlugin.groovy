@@ -21,6 +21,8 @@ Just point the auto complete JS URL at suggest/[subject]?term=bla and you get a 
 
 You can add suggestion handlers to the service as a closure, or just add a text file named [subject].txt with an item\
 per line to be searched for matches. The simple search returns a result if an item string contains the term anywhere.
+
+See docs for details.
 '''
 
     // URL to the plugin's documentation
