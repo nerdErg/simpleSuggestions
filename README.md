@@ -41,6 +41,9 @@ So for the title input above we'd put a title.txt file in the suggestions direct
 
 And that's it, your input box will have suggestions served up.
 
+*NOTE* suggestion files are loaded into memory once requested, and stay there for the life of the application, so bear that
+in mind with large data sets, you may want to provide a handler that accesses a database.
+
 If you need to provide more complex suggestions, perhaps using a database then just add a suggestion handler to the suggestService.
 For example:
 

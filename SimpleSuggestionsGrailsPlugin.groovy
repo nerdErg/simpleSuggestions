@@ -24,7 +24,7 @@ per line to be searched for matches. The simple search returns a result if an it
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/plugin/simple-suggestions"
+    def documentation = "http://nerderg.com/Simple+Suggestions+plugin"
 
     // Extra (optional) plugin metadata
 
@@ -41,7 +41,7 @@ per line to be searched for matches. The simple search returns a result if an it
 //    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
 
     // Online location of the plugin's browseable source code.
-    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
+    def scm = [ url: "https://github.com/nerdErg/simpleSuggestions" ]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before
