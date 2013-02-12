@@ -34,7 +34,7 @@ class SuggestService {
         suggestionHandlers.put(subject, handler)
     }
 
-    List<String> getSuggestions(String subject, String term) {
+    List getSuggestions(String subject, String term) {
         if (suggestionHandlers[subject]) {
             suggestionHandlers[subject](term)
         } else {
