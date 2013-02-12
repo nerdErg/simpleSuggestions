@@ -19,7 +19,7 @@ See docs for details.
     def documentation = "http://nerderg.com/Simple+Suggestions+plugin"
 
     def license = "APACHE"
-    def organization = [ name: "nerdErg Pty Ltd", url: "http://www.nerderg.com/" ]
-//    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
-    def scm = [ url: "https://github.com/nerdErg/simpleSuggestions" ]
+    def organization = [name: "nerdErg Pty Ltd", url: "http://www.nerderg.com/"]
+    def issueManagement = [system: "JIRA", url: "https://github.com/nerdErg/simpleSuggestions/issues"]
+    def scm = [url: "https://github.com/nerdErg/simpleSuggestions"]
 }
