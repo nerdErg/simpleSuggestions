@@ -1,8 +1,9 @@
 package simplesuggestions
 
+import grails.test.mixin.TestFor
+
 import com.nerderg.suggest.SuggestController
 import com.nerderg.suggest.SuggestService
-import grails.test.mixin.*
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
@@ -10,15 +11,7 @@ import grails.test.mixin.*
 @TestFor(SuggestController)
 class SuggestControllerTests {
 
-    void setUp() {
-        // Setup logic here
-    }
-
-    void tearDown() {
-        // Tear down logic here
-    }
-
-    void testSomething() {
+    void testSuggest() {
         def mockControl = mockFor(SuggestService)
         mockControl.demand.getSuggestions(1..1) { String subject, String term ->
             ['one', 'two']
