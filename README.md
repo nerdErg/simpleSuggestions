@@ -41,6 +41,10 @@ So for the title input above we'd put a title.txt file in the suggestions direct
 
 And that's it, your input box will have suggestions served up.
 
+You can configure where the suggestion files live by setting it in config.groovy like so:
+
+    suggest.data.directory = 'mySuggestions'
+
 *NOTE* suggestion files are loaded into memory once requested, and stay there for the life of the application, so bear that
 in mind with large data sets, you may want to provide a handler that accesses a database.
 
