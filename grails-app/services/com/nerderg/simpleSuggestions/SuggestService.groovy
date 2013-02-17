@@ -37,7 +37,7 @@ class SuggestService {
     private List<String> loadData(String name) {
         if (!dataMap[name]) {
             List<String> data = []
-            String dataDir = grailsApplication.config.suggest.data.directory ?: './suggestions'
+            String dataDir = grailsApplication.config?.suggest?.data?.directory ?: './suggestions'
             File file = new File(dataDir, "${name}.txt")
             if (file.exists()) {
                 file.eachLine { line ->

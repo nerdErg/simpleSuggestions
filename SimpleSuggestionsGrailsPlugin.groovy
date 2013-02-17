@@ -22,4 +22,9 @@ See docs for details.
     def organization = [name: "nerdErg Pty Ltd", url: "http://www.nerderg.com/"]
     def issueManagement = [system: "JIRA", url: "https://github.com/nerdErg/simpleSuggestions/issues"]
     def scm = [url: "https://github.com/nerdErg/simpleSuggestions"]
+
+    def pluginExcludes = [
+            "suggestions"
+    ]
+
 }
