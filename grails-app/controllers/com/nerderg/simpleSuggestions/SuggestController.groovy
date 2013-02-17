@@ -15,7 +15,7 @@ limitations under the License.
 
  */
 
-package com.nerderg.suggest
+package com.nerderg.simpleSuggestions
 
 import grails.converters.JSON
 

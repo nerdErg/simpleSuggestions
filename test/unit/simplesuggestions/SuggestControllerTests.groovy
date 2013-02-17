@@ -2,8 +2,8 @@ package simplesuggestions
 
 import grails.test.mixin.TestFor
 
-import com.nerderg.suggest.SuggestController
-import com.nerderg.suggest.SuggestService
+import com.nerderg.simpleSuggestions.SuggestController
+import com.nerderg.simpleSuggestions.SuggestService
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions

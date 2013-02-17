@@ -15,7 +15,7 @@ limitations under the License.
 
 */
 
-package com.nerderg.suggest
+package com.nerderg.simpleSuggestions
 
 /**
  * A service to provide suggestions for things. Works with SuggestController.
@@ -31,8 +31,8 @@ class SuggestService {
 
     static transactional = false
 
-    protected Map<String, Closure> suggestionHandlers = [:]
-    protected Map<String, List<String>> dataMap = [:]
+    protected final Map<String, Closure> suggestionHandlers = [:]
+    protected final Map<String, List<String>> dataMap = [:]
 
     private List<String> loadData(String name) {
         if (!dataMap[name]) {

@@ -3,7 +3,7 @@ package simplesuggestions
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
 
-import com.nerderg.suggest.SuggestService
+import com.nerderg.simpleSuggestions.SuggestService
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
