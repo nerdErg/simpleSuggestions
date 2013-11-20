@@ -1,14 +1,15 @@
 package simplesuggestions
 
+import com.nerderg.simpleSuggestions.ClasspathSuggestionLoader
 import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
 
 import com.nerderg.simpleSuggestions.SuggestService
+import org.junit.Test
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
-@TestMixin(GrailsUnitTestMixin)
 class SuggestServiceTests {
 
     private SuggestService suggestService
@@ -16,6 +17,7 @@ class SuggestServiceTests {
     void setUp() {
     }
 
+    @Test
     void testSuggestion() {
         def grailsApp = [config: [suggest: [data: [directory: './test/unit/simplesuggestions/suggestions']]]]
         def suggestService = new SuggestService(grailsApplication: grailsApp)
@@ -30,10 +32,25 @@ class SuggestServiceTests {
         assert suggestService.getSuggestions('titles', 'D') == ['Dr']
     }
 
+    @Test
     void testDefaultDirectory() {
         def grailsApp = [config: [:]]
         def suggestService = new SuggestService(grailsApplication: grailsApp)
         assert suggestService.getSuggestions('titles', 'M') == ['Monster', 'Magnifico']
+        assert suggestService.getSuggestions('toast', 'hello') == []
+    }
+
+    @Test
+    void testClasspathDirectory() {
+        def suggestService = new SuggestService(suggestionLoader: new ClasspathSuggestionLoader("suggestions"))
+        assert suggestService.getSuggestions('titles', 'N') == ['Nerd', 'Nerd Sr']
+        assert suggestService.getSuggestions('toast', 'hello') == []
+    }
+
+    @Test
+    void testClasspathDirectory2() {
+        def suggestService = new SuggestService(suggestionLoader: new ClasspathSuggestionLoader("suggestions/"))
+        assert suggestService.getSuggestions('titles', 'S') == ['SuperNerd']
         assert suggestService.getSuggestions('toast', 'hello') == []
     }
 }

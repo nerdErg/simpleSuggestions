@@ -31,20 +31,18 @@ class SuggestService {
 
     static transactional = false
 
+    public SuggestionLoader suggestionLoader
+
     protected final Map<String, Closure> suggestionHandlers = [:]
     protected final Map<String, List<String>> dataMap = [:]
 
     private List<String> loadData(String name) {
+        if (!suggestionLoader) {
+            suggestionLoader = new SimpleSuggestionLoader(grailsApplication?.config?.suggest?.data?.directory)
+        }
+
         if (!dataMap[name]) {
-            List<String> data = []
-            String dataDir = grailsApplication.config?.suggest?.data?.directory ?: './suggestions'
-            File file = new File(dataDir, "${name}.txt")
-            if (file.exists()) {
-                file.eachLine { line ->
-                    data.add(line)
-                }
-                dataMap[name] = Collections.unmodifiableList(data)
-            }
+            dataMap[name] = Collections.unmodifiableList(suggestionLoader.loadAllAvailableSuggestionOptions(name))
         }
         return dataMap[name]
     }

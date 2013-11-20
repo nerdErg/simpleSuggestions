@@ -1,5 +1,5 @@
 class SimpleSuggestionsGrailsPlugin {
-    def version = "0.1"
+    def version = "0.2-SNAPSHOT"
     def grailsVersion = "2.0 > *"
 
     def title = "nerdErg Simple Suggestions Plugin"
@@ -20,7 +20,7 @@ See docs for details.
 
     def license = "APACHE"
     def organization = [name: "nerdErg Pty Ltd", url: "http://www.nerderg.com/"]
-    def issueManagement = [system: "JIRA", url: "https://github.com/nerdErg/simpleSuggestions/issues"]
+    def issueManagement = [url: "https://github.com/nerdErg/simpleSuggestions/issues"]
     def scm = [url: "https://github.com/nerdErg/simpleSuggestions"]
 
     def pluginExcludes = [
