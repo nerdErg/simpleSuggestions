@@ -19,13 +19,12 @@ class ClasspathSuggestionLoader implements SuggestionLoader {
     List<String> loadAllAvailableSuggestionOptions(String subject) {
         List<String> suggestionOptions = []
 
-        File file = new File(subject)
         classpathRelativeDir = classpathRelativeDir.lastIndexOf("/") == classpathRelativeDir.length() - 1 ? classpathRelativeDir : classpathRelativeDir + "/"
         ClassPathResource classPathResource = new ClassPathResource(classpathRelativeDir + "${subject}.txt")
         if (classPathResource.exists()) {
-            FileUtils.copyInputStreamToFile(classPathResource.inputStream, file)
+            BufferedInputStream bis = new BufferedInputStream(classPathResource.inputStream)
 
-            file.eachLine { line ->
+            bis.eachLine{ line ->
                 suggestionOptions.add(line)
             }
         }
