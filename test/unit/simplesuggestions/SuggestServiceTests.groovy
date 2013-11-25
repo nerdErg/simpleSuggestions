@@ -53,6 +53,16 @@ class SuggestServiceTests {
         assert suggestService.getSuggestions('titles', 'D') == ['Dr']
     }
 
+    @Test
+    void testExchangingDefaultHandler() {
+        Closure defaultHandler = {String subject, String term ->
+            return ["$subject-$term", "$term-$subject"]
+        }
+        def suggestService = new SuggestService(grailsApplication: [], defaultSuggestionHandler: defaultHandler)
+        assert suggestService.getSuggestions('test', 'wally') == ['test-wally', 'wally-test']
+        assert suggestService.getSuggestions('test', 'hello') == ['test-hello', 'hello-test']
+        assert suggestService.getSuggestions('toast', 'hello') == ['toast-hello', 'hello-toast']
+    }
 
     @Test
     void testDefaultDirectory() {

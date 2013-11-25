@@ -25,6 +25,8 @@ import org.springframework.core.io.ClassPathResource
  * This service lets you provide lists of options to match a users input against as a file or provide a handler closure
  * see <a href="http://nerderg.com/Simple+Suggestions+plugin">nerderg.com</a> for details.
  *
+ * You can also set a defaultSuggestionHandler closure that takes a subject and a term string.
+ *
  * There are two configuration options you can set in Config.groovy
  *
  * suggest.data.directory = 'where/we/keep/suggestion/files' //relative path from install or in classpath OR and absolute path you choose
@@ -40,6 +42,16 @@ class SuggestService {
 
     protected final Map<String, Closure> suggestionHandlers = [:]
     protected final Map<String, List<String>> dataMap = [:]
+
+    /**
+     * A defaultSuggestionHandler closure is provided but can be replaced by a custom one. The closure must take a subject
+     * and term argument and return a List. If there are no suggestions it should return and empty list.
+     *
+     * It's a good idea to *log* an error if you handler doesn't handle a particular subject and return an empty list.
+     */
+    Closure defaultSuggestionHandler = {String subject, String term ->
+        _defaultSuggestionHandler(subject, term)
+    }
 
     private List<String> loadAllSuggestions(String subject) {
 
@@ -86,6 +98,11 @@ class SuggestService {
      * Add a suggestion handler closure to the suggestion service to handle a particular subject. Your handler should
      * return an empty list if it finds no results.
      *
+     * You can supply a handler closure that takes both Subject and Term or just term e.g.
+     * <code>
+     *     { String subject, String term -> return lookUpMyDB(subject, term) }
+     * </code>
+     *
      * @param subject - the subject that this handler will respond to
      * @param handler - closure that returns a list of results that get encoded as JSON and sent back to the caller, normally
      * just Strings
@@ -128,7 +145,7 @@ class SuggestService {
      * @param term - the query term typed in by the user
      * @return List of Strings
      */
-    List<String> defaultSuggestionHandler(String subject, String term) {
+    private List<String> _defaultSuggestionHandler(String subject, String term) {
         List<String> data = loadAllSuggestions(subject)
         if (data) {
             simpleSearchList(data, term)
