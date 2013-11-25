@@ -12,8 +12,6 @@ import org.junit.Test
  */
 class SuggestServiceTests {
 
-    private SuggestService suggestService
-
     void setUp() {
     }
 
@@ -25,6 +23,7 @@ class SuggestServiceTests {
             return [term, "$term A", "$term B"]
         }
         suggestService.addSuggestionHandler('test', handler)
+
         assert suggestService.getSuggestions('test', 'wally') == ['wally', 'wally A', 'wally B']
         assert suggestService.getSuggestions('test', 'hello') == ['hello', 'hello A', 'hello B']
         assert suggestService.getSuggestions('toast', 'hello') == []
@@ -33,23 +32,51 @@ class SuggestServiceTests {
     }
 
     @Test
+    void testSuggestionHandlerWithSubject() {
+        def grailsApp = [config: [suggest: [data: [directory: './test/unit/simplesuggestions/suggestions']]]]
+        def suggestService = new SuggestService(grailsApplication: grailsApp)
+        def handler = { String subject, String term ->
+            return ["$subject -> $term"]
+        }
+        suggestService.addSuggestionHandler('test', handler)
+
+        def anotherHandler = {String subject, String term ->
+            return [[(subject) : [name:"$term A", address: "3 fred street"]]]
+        }
+        suggestService.addSuggestionHandler('people', anotherHandler)
+
+        assert suggestService.getSuggestions('test', 'wally') == ['test -> wally']
+        assert suggestService.getSuggestions('test', 'hello') == ['test -> hello']
+        assert suggestService.getSuggestions('people', 'peter') == [[people: [name: "peter A", address: "3 fred street"]]]
+        assert suggestService.getSuggestions('toast', 'hello') == []
+        assert suggestService.getSuggestions('titles', 'M') == ['Mr', 'Ms', 'Miss', 'Mrs', 'Master']
+        assert suggestService.getSuggestions('titles', 'D') == ['Dr']
+    }
+
+
+    @Test
     void testDefaultDirectory() {
         def grailsApp = [config: [:]]
         def suggestService = new SuggestService(grailsApplication: grailsApp)
+
         assert suggestService.getSuggestions('titles', 'M') == ['Monster', 'Magnifico']
         assert suggestService.getSuggestions('toast', 'hello') == []
     }
 
     @Test
     void testClasspathDirectory() {
-        def suggestService = new SuggestService(suggestionLoader: new ClasspathSuggestionLoader("suggestions"))
+        def grailsApp = [config: [suggest: [data: [directory: 'suggestions', classpathResource: true]]]]
+        def suggestService = new SuggestService(grailsApplication: grailsApp)
+
         assert suggestService.getSuggestions('titles', 'N') == ['Nerd', 'Nerd Sr']
         assert suggestService.getSuggestions('toast', 'hello') == []
     }
 
     @Test
     void testClasspathDirectory2() {
-        def suggestService = new SuggestService(suggestionLoader: new ClasspathSuggestionLoader("suggestions/"))
+        def grailsApp = [config: [suggest: [data: [directory: 'suggestions/', classpathResource: true]]]]
+        def suggestService = new SuggestService(grailsApplication: grailsApp)
+
         assert suggestService.getSuggestions('titles', 'S') == ['SuperNerd']
         assert suggestService.getSuggestions('toast', 'hello') == []
     }

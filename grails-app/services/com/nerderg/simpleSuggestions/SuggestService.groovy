@@ -17,11 +17,18 @@ limitations under the License.
 
 package com.nerderg.simpleSuggestions
 
+import org.springframework.core.io.ClassPathResource
+
 /**
  * A service to provide suggestions for things. Works with SuggestController.
  *
  * This service lets you provide lists of options to match a users input against as a file or provide a handler closure
  * see <a href="http://nerderg.com/Simple+Suggestions+plugin">nerderg.com</a> for details.
+ *
+ * There are two configuration options you can set in Config.groovy
+ *
+ * suggest.data.directory = 'where/we/keep/suggestion/files' //relative path from install or in classpath OR and absolute path you choose
+ * suggest.data.classpathResource = true/false //set true if you want to put the suggestion files in the classpath
  *
  * @see SuggestController
  */
@@ -31,24 +38,52 @@ class SuggestService {
 
     static transactional = false
 
-    public SuggestionLoader suggestionLoader
-
     protected final Map<String, Closure> suggestionHandlers = [:]
     protected final Map<String, List<String>> dataMap = [:]
 
-    private List<String> loadData(String name) {
-        if (!suggestionLoader) {
-            suggestionLoader = new SimpleSuggestionLoader(grailsApplication?.config?.suggest?.data?.directory)
+    private List<String> loadAllSuggestions(String subject) {
+
+        if (!dataMap[subject]) {
+            File file = new File(grailsApplication?.config?.suggest?.data?.directory ?: './suggestions', "${subject}.txt")
+
+            if (grailsApplication?.config?.suggest?.data?.classpathResource) {
+                dataMap[subject] = Collections.unmodifiableList(loadSuggestionsFromClasspath(file))
+            } else {
+                dataMap[subject] = Collections.unmodifiableList(loadSuggestionsFromFile(file))
+            }
+        }
+        return dataMap[subject]
+    }
+
+    private List<String> loadSuggestionsFromFile(File file) {
+        List<String> suggestionOptions = []
+
+        if (file.exists()) {
+            file.eachLine { line ->
+                suggestionOptions.add(line)
+            }
         }
 
-        if (!dataMap[name]) {
-            dataMap[name] = Collections.unmodifiableList(suggestionLoader.loadAllAvailableSuggestionOptions(name))
+        return suggestionOptions
+    }
+
+    private List<String> loadSuggestionsFromClasspath(File file) {
+        List<String> suggestionOptions = []
+
+        ClassPathResource classPathResource = new ClassPathResource(file.path)
+        if (classPathResource.exists()) {
+            BufferedInputStream bis = new BufferedInputStream(classPathResource.inputStream)
+
+            bis.eachLine { line ->
+                suggestionOptions.add(line)
+            }
         }
-        return dataMap[name]
+
+        return suggestionOptions
     }
 
     /**
-     * Add a suggestion hander closure to the suggestion service to handle a particular subject. Your handler should
+     * Add a suggestion handler closure to the suggestion service to handle a particular subject. Your handler should
      * return an empty list if it finds no results.
      *
      * @param subject - the subject that this handler will respond to
@@ -68,8 +103,13 @@ class SuggestService {
      * @return List of Objects, normally Strings
      */
     List getSuggestions(String subject, String term) {
-        if (suggestionHandlers[subject]) {
-            suggestionHandlers[subject](term)
+        Closure handler = suggestionHandlers[subject]
+        if (handler) {
+            if(handler.maximumNumberOfParameters > 1) {
+                handler(subject, term)
+            } else {
+                handler(term)
+            }
         } else {
             defaultSuggestionHandler(subject, term)
         }
@@ -79,12 +119,17 @@ class SuggestService {
      * This default suggestion handler looks to see if there is a text file that matches the subject and loads it to look
      * through the list of items for the term. The term can be anywhere within the string.
      *
+     * By design this is simple, and is not an attempt to cover all possible scenarios of how we handle suggestions. (for
+     * those we have handlers)
+     *
+     * This loads all the suggestions into memory, so don't use it for suggesting, say, all the URLs on the Internet.
+     *
      * @param subject - the subject to search on, e.g. titles
      * @param term - the query term typed in by the user
      * @return List of Strings
      */
     List<String> defaultSuggestionHandler(String subject, String term) {
-        List<String> data = loadData(subject)
+        List<String> data = loadAllSuggestions(subject)
         if (data) {
             simpleSearchList(data, term)
         } else {
