@@ -43,7 +43,15 @@ And that's it, your input box will have suggestions served up.
 
 You can configure where the suggestion files live by setting it in config.groovy like so:
 
+    suggest.data.directory = './mySuggestions'
+
+The directory is relative to the root directory of your app unless you make it an absolute path.
+
+You can put the suggestion files in you Classpath if you like by setting the directory relative to your Classpath, and
+setting the classpathResource option like this:
+
     suggest.data.directory = 'mySuggestions'
+    suggest.data.classpathResource = true
 
 *NOTE* suggestion files are loaded into memory once requested, and stay there for the life of the application, so bear that
 in mind with large data sets, you may want to provide a handler that accesses a database.
@@ -58,7 +66,32 @@ For example:
        }
        suggestService.addSuggestionHandler('test', handler)
 
-The resultant list of things will be send back as JSON, so if you send back a list of Maps or Objects they'll be JSONified
+OR you can take both the subject and term in your handler like this:
+
+       def handler = { String subject, String term ->
+            //do something interesting here, perhaps call another service
+            //the handler has to return a list of things, normally Strings
+           return [term, "$term A", "$term B", subject]
+       }
+       suggestService.addSuggestionHandler('test', handler)
+
+Note you still have to add the handler for all the subjects you expect... unless you replace the defaultSuggestionHandler
+on the suggestService. To do that just set it in you bootstrap (or anywhere you like really) like this:
+
+       def suggestService
+
+       ...
+
+       MyUBeautSuggestionHandler mubsh = MyUBeautSuggestionHandlerFactory.getMeOneOfThoseLittleBeauties(...)
+
+       suggestService.defaultSuggestionHandler =  { String subject, String term ->
+           mubsh(subject, term)
+       }
+
+The resultant list of things will be sent back as JSON, so if you send back a list of Maps or Objects they'll be JSONified
 and sent to the caller, so you can do what you like with it.
+
+If you are going to replace the defaultSuggestionHandler it's best to log an error if you get a subject you don't know about.
+Just sayin' :-)
 
 That simple.
