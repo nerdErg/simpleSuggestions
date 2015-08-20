@@ -119,10 +119,12 @@ class SuggestService {
      * @param term - the query term typed in by the user
      * @return List of Objects, normally Strings
      */
-    List getSuggestions(String subject, String term) {
+    List getSuggestions(String subject, String term, Map params) {
         Closure handler = suggestionHandlers[subject]
         if (handler) {
-            if(handler.maximumNumberOfParameters > 1) {
+            if(handler.maximumNumberOfParameters == 3) {
+                handler(subject, term, params)
+            } else if(handler.maximumNumberOfParameters == 2) {
                 handler(subject, term)
             } else {
                 handler(term)

@@ -30,7 +30,7 @@ class SuggestController {
      * @return JSON list
      */
     def suggest(String subject, String term) {
-        List suggestions = suggestService.getSuggestions(subject, term)
+        List suggestions = suggestService.getSuggestions(subject, term, params)
         render suggestions as JSON
     }
 

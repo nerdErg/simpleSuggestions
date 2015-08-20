@@ -13,7 +13,7 @@ class SuggestControllerTests {
 
     void testSuggest() {
         def mockControl = mockFor(SuggestService)
-        mockControl.demand.getSuggestions(1..1) { String subject, String term ->
+        mockControl.demand.getSuggestions(1..1) { String subject, String term, Map params ->
             ['one', 'two']
         }
         controller.suggestService = mockControl.createMock()

@@ -1,9 +1,5 @@
 package simplesuggestions
 
-import com.nerderg.simpleSuggestions.ClasspathSuggestionLoader
-import grails.test.mixin.TestMixin
-import grails.test.mixin.support.GrailsUnitTestMixin
-
 import com.nerderg.simpleSuggestions.SuggestService
 import org.junit.Test
 
@@ -24,11 +20,11 @@ class SuggestServiceTests {
         }
         suggestService.addSuggestionHandler('test', handler)
 
-        assert suggestService.getSuggestions('test', 'wally') == ['wally', 'wally A', 'wally B']
-        assert suggestService.getSuggestions('test', 'hello') == ['hello', 'hello A', 'hello B']
-        assert suggestService.getSuggestions('toast', 'hello') == []
-        assert suggestService.getSuggestions('titles', 'M') == ['Mr', 'Ms', 'Miss', 'Mrs', 'Master']
-        assert suggestService.getSuggestions('titles', 'D') == ['Dr']
+        assert suggestService.getSuggestions('test', 'wally', [:]) == ['wally', 'wally A', 'wally B']
+        assert suggestService.getSuggestions('test', 'hello', [:]) == ['hello', 'hello A', 'hello B']
+        assert suggestService.getSuggestions('toast', 'hello', [:]) == []
+        assert suggestService.getSuggestions('titles', 'M', [:]) == ['Mr', 'Ms', 'Miss', 'Mrs', 'Master']
+        assert suggestService.getSuggestions('titles', 'D', [:]) == ['Dr']
     }
 
     @Test
@@ -45,12 +41,12 @@ class SuggestServiceTests {
         }
         suggestService.addSuggestionHandler('people', anotherHandler)
 
-        assert suggestService.getSuggestions('test', 'wally') == ['test -> wally']
-        assert suggestService.getSuggestions('test', 'hello') == ['test -> hello']
-        assert suggestService.getSuggestions('people', 'peter') == [[people: [name: "peter A", address: "3 fred street"]]]
-        assert suggestService.getSuggestions('toast', 'hello') == []
-        assert suggestService.getSuggestions('titles', 'M') == ['Mr', 'Ms', 'Miss', 'Mrs', 'Master']
-        assert suggestService.getSuggestions('titles', 'D') == ['Dr']
+        assert suggestService.getSuggestions('test', 'wally', [:]) == ['test -> wally']
+        assert suggestService.getSuggestions('test', 'hello', [:]) == ['test -> hello']
+        assert suggestService.getSuggestions('people', 'peter', [:]) == [[people: [name: "peter A", address: "3 fred street"]]]
+        assert suggestService.getSuggestions('toast', 'hello', [:]) == []
+        assert suggestService.getSuggestions('titles', 'M', [:]) == ['Mr', 'Ms', 'Miss', 'Mrs', 'Master']
+        assert suggestService.getSuggestions('titles', 'D', [:]) == ['Dr']
     }
 
     @Test
@@ -59,9 +55,9 @@ class SuggestServiceTests {
             return ["$subject-$term", "$term-$subject"]
         }
         def suggestService = new SuggestService(grailsApplication: [], defaultSuggestionHandler: defaultHandler)
-        assert suggestService.getSuggestions('test', 'wally') == ['test-wally', 'wally-test']
-        assert suggestService.getSuggestions('test', 'hello') == ['test-hello', 'hello-test']
-        assert suggestService.getSuggestions('toast', 'hello') == ['toast-hello', 'hello-toast']
+        assert suggestService.getSuggestions('test', 'wally', [:]) == ['test-wally', 'wally-test']
+        assert suggestService.getSuggestions('test', 'hello', [:]) == ['test-hello', 'hello-test']
+        assert suggestService.getSuggestions('toast', 'hello', [:]) == ['toast-hello', 'hello-toast']
     }
 
     @Test
@@ -69,25 +65,25 @@ class SuggestServiceTests {
         def grailsApp = [config: [:]]
         def suggestService = new SuggestService(grailsApplication: grailsApp)
 
-        assert suggestService.getSuggestions('titles', 'M') == ['Monster', 'Magnifico']
-        assert suggestService.getSuggestions('toast', 'hello') == []
+        assert suggestService.getSuggestions('titles', 'M', [:]) == ['Monster', 'Magnifico']
+        assert suggestService.getSuggestions('toast', 'hello', [:]) == []
     }
 
     @Test
     void testClasspathDirectory() {
-        def grailsApp = [config: [suggest: [data: [directory: 'suggestions', classpathResource: true]]]]
+        def grailsApp = [config: [suggest: [data: [directory: 'simplesuggestions/suggestions/', classpathResource: true]]]]
         def suggestService = new SuggestService(grailsApplication: grailsApp)
 
-        assert suggestService.getSuggestions('titles', 'N') == ['Nerd', 'Nerd Sr']
-        assert suggestService.getSuggestions('toast', 'hello') == []
+        assert suggestService.getSuggestions('titles', 'N', [:]) == ['Nerd', 'Nerd Sr']
+        assert suggestService.getSuggestions('toast', 'hello', [:]) == []
     }
 
     @Test
     void testClasspathDirectory2() {
-        def grailsApp = [config: [suggest: [data: [directory: 'suggestions/', classpathResource: true]]]]
+        def grailsApp = [config: [suggest: [data: [directory: 'simplesuggestions/suggestions/', classpathResource: true]]]]
         def suggestService = new SuggestService(grailsApplication: grailsApp)
 
-        assert suggestService.getSuggestions('titles', 'S') == ['SuperNerd']
-        assert suggestService.getSuggestions('toast', 'hello') == []
+        assert suggestService.getSuggestions('titles', 'S', [:]) == ['Sir','SuperNerd']
+        assert suggestService.getSuggestions('toast', 'hello', [:]) == []
     }
 }
