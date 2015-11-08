@@ -1,5 +1,5 @@
 class SimpleSuggestionsGrailsPlugin {
-    def version = "0.2"
+    def version = "0.3"
     def grailsVersion = "2.0 > *"
 
     def title = "nerdErg Simple Suggestions Plugin"
